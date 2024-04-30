@@ -7,11 +7,17 @@
 ############################################################################
 
 default:
-  just --list
+    just --list
 
 # Update the flake
 test:
-  bundle exec jekyll serve --host 0.0.0.0 --port 4000
+    bundle exec jekyll serve --host 0.0.0.0 --port 4000
 
 post name:
-  bundle exec jekyll post "{{name}}"
+    bundle exec jekyll post "{{name}}"
+
+draft name:
+    bundle exec jekyll draft "{{name}}"
+
+publish name:
+    bundle exec jekyll publish "_drafts/{{name}}.md"
