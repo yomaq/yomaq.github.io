@@ -1,6 +1,7 @@
 ---
 layout: post
 title: ZFS, Encryption, Backups, and Convenience
+author: yomaq
 categories:
 - Homelab
 - Nixos
