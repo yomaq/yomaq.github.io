@@ -14,19 +14,19 @@ date: 2024-04-30 19:45 -0500
 ---
 ## Goals
 
-When I began planning out a homelab I had a few expectations for my disk/storage configurations.
+When I began planning out a home lab I had a few expectations for my disk/storage configurations.
 
-1. Easy to setup new devices
+1. Easy to set up new devices
 2. Convenient backups from any device
 3. Convenient restores to any device
 4. Encryption with convenient unlocks
 
 ## The result
 1. Can fully install new systems in about 10 minutes. 
-2. Device specific configuration of disks is kept minimal and easily readable.
-3. Each system's important files are stored in consistent ZFS datasets which automatically handle snapshots. All files not stored on those specific datasets are removed every reboot, as the root filesystem is destroyed by restoring an empty zfs snapshot.
+2. Device-specific configuration of disks is kept minimal and easily readable.
+3. Each system's important files are stored in consistent ZFS datasets which automatically handle snapshots. All files not stored on those specific datasets are removed every reboot, as the root filesystem is destroyed by restoring an empty ZFS snapshot.
 4. Backup server(s) dynamically create new backup tasks as new machines are added to the Nixos Flake. These backup tasks incrementally replicate a single dataset's snapshots from each machine to the backup computer nightly, stored snapshots are automatically managed.
-5. Restoring data to a freshly installed machine is handled by a single command to copy the backed-up zfs dataset to the machine, followed by a nixos-rebuild. 
+5. Restoring data to a freshly installed machine is handled by a single command to copy the backed-up ZFS dataset to the machine, followed by a nixos-rebuild. 
 6. Luks encrypted disks unlocked with initrd-ssh, using a bash script which pulls the passwords from 1password
 
 ## Sources
@@ -36,7 +36,7 @@ My code examples here were pulled from my current flake repo. If something looks
 [Syncoid module](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/zfs/syncoid/nixos.nix)  
 [Sanoid module](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/zfs/sanoid/nixos.nix)  
 [Impermanence module](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/impermanence/nixos.nix)  
-Tailscale modules [1](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/tailscale/default.nix) and [2](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/tailscale/nixos.nix) (1 is shared with darwin hosts, 2 is only for nixos)  
+Tailscale modules [1](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/tailscale/default.nix) and [2](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/hosts/tailscale/nixos.nix) (1 is shared with Darwin hosts, and 2 is only for Nixos)  
 [Nixos-Anywhere Script](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/Utilities/nixos-anywhere/remote-install-encrypt.sh)  
 [initrd-ssh unlock script](https://github.com/yomaq/nix-config/blob/5a135a69553d7dfeae412f7eb291a5d067bfb2b4/modules/scripts/initrdunlock.nix)  
 
@@ -44,7 +44,7 @@ Tools and services I use to get all this working:
 
 [Nixos](https://nixos.org/)  
 [Nixos Disko module](https://github.com/nix-community/disko)  
-[Nixos Anywhere - pairs with disko](https://github.com/nix-community/nixos-anywhere)  
+[Nixos Anywhere - pairs with Disko](https://github.com/nix-community/nixos-anywhere)  
 [Nixos Impermanence module](https://github.com/nix-community/impermanence)  
 
 [Tailscale](https://tailscale.com/kb/1017/install)  
@@ -53,16 +53,16 @@ Tools and services I use to get all this working:
 
 ## NixOS
 
-All of my computers for this purpose are currently running NixOS. My backup servers do have support backing up non-nixos machines, but all of the automation and *convenience* that I am after is lost without NixOS.
+All of my computers for this purpose are currently running NixOS. My backup servers do have support backing up non-Nixos machines, but all of the automation and *convenience* that I am after is lost without NixOS.
 
-NixOS allows you to declaratively and determinately configure machines in a way that no other general OS is able to.
+NixOS allows you to declaratively and determinately configure machines in a way that no other general OS can.
 I am using a single NixOS flake to configure all of my systems, and it holds all of the code to configure all of these machines.  
 
 ## Disko - declarative partitioning of disks
 
-Disko fills in an empty spot in nixos to allow you to describe and configure your disk partitioning / formatting as code. Which to meet my goal of easily setting new devices up, is rather required, especially if I want to use any non standard disk configuration like zfs.
+Disko fills in an empty spot in Nixos to allow you to describe and configure your disk partitioning/formatting as code. To meet my goal of easily setting new devices up is rather required, especially if I want to use any non-standard disk configuration like ZFS.
 
-Collectively my disk configuration currently comes together in my primary config module [linked here](#sources). With config for disko, initrd-ssh, systemd boot, zfs, etc its the longest module in my flake currently. Lets take it apart a bit.
+Collectively my disk configuration currently comes together in my primary config module [linked here](#sources). With config for disko, initrd-ssh, systemd boot, ZFS, etc it's the longest module in my flake currently. Let's take it apart a bit.
 
 Import disko into the flake
 
@@ -76,7 +76,7 @@ Import disko into the flake
   ...
 }
 ```
-And import into the host configuration (in my case a shared module which is then imported by every host)
+And import into the host configuration (in my case a shared module that is then imported by every host)
 ```nix
 { config, lib, inputs, ... }:
 
@@ -90,10 +90,10 @@ And import into the host configuration (in my case a shared module which is then
 ```
 
 
-Disko allows you to declaratively configure your disks at install and the mounting of disks after install, meaning the standard mounting configuration in your hardware.nix file is not needed.  
-It will only make changes when you first install your system, or re-run disko (which will wipe your disks) However you can make changes to the disko config AND manually make the changes on your disk, then disko will ensure they are mounted as directed in the config.  
+Disko allows you to declaratively configure your disks at installation and the mounting of disks after installation, meaning the standard mounting configuration in your hardware.nix file is not needed.  
+It will only make changes when you first install your system, or re-run disko (which will wipe your disks) However you can make changes to the disko config AND manually make the changes on your disk, and then disko will ensure they are mounted as directed in the config.  
 
-Here is an example disko config to setup a basic zfs pool and dataset along with a boot partition.
+Here is an example Disko config to set up a basic ZFS pool and dataset along with a boot partition.
 ```nix
 {
   disko.devices = {
@@ -150,12 +150,12 @@ Here is an example disko config to setup a basic zfs pool and dataset along with
 }
 ```
 
-To reach my goals I want to have some standardization for disk formatting across all devices in my flake. I specifically do NOT want to make a full disko config for each and every device.  
-To fit this I created a single shared module that builds all of the disko config for every host, and created some options to allow each host to alter a few specific variables to fit its needs.   
-I am running zfs on *all* of my nixos devices currently, over the past year everything has worked really well.
-If in the future I have reason to not use zfs on a device I can just add new options to configure disko to setup the disks as needed and just enable those options instead in the device specific config (example below).
+To reach my goals I want to have some standardization for disk formatting across all devices in my flake. I specifically do NOT want to make a full Disko config for every device.  
+To fit this I created a single shared module that builds all of the Disko config for every host and created some options to allow each host to alter a few specific variables to fit its needs.   
+I am running ZFS on *all* of my Nixos devices currently, over the past year everything has worked well.
+If in the future I have reason to not use ZFS on a device I can just add new options to configure Disko to set up the disks as needed and just enable those options instead in the device-specific config (example below).
 
-Here is the nixos module I use to configure zfs on root:
+Here is the Nixos module I use to configure ZFS on root:
 ```nix
 { options, config, lib, pkgs, inputs, ... }:
 let
@@ -332,7 +332,7 @@ in
             options."com.sun:auto-snapshot" = "false";
             postCreateHook = "zfs snapshot zroot/persist@empty";
           };
-          # dataset where all files that should both persist and need to be backedup are stored
+          # dataset where all files that should both persist and need to be backed up are stored
           # the Impermanence module is what ensures files are correctly stored here
           persistSave = {
             type = "zfs_fs";
@@ -371,7 +371,7 @@ in
 ```
 
 
-By importing that module into a host, I can configure efficient, easily readable device specific configuration. Simply need to enable the correct modules, and provide the disk device name, and a zfs hostID.
+By importing that module into a host, I can configure efficient, easily readable device-specific configuration. Simply need to enable the correct modules, and provide the disk device name, and a ZFS hostID.
 
 ```nix
 { config, lib, pkgs, inputs, ... }:
@@ -394,10 +394,10 @@ By importing that module into a host, I can configure efficient, easily readable
   };
 }
 ```
-I also have configuration to setup a zstorage zpool with a couple of datasets in order to handle additional hdd storage devices for backups on my backup server or other such bulk/secondary storage device needs. The configuration is quite similar to the root config. You can see full details for it in the primary module [linked here](#sources).
+I also have a configuration to set up a zstorage zpool with a couple of datasets to handle additional HDD storage devices for backups on my backup server or other such bulk/secondary storage device needs. The configuration is quite similar to the root config. You can see full details for it in the primary module [linked here](#sources).
 
 
-You will also need to configure nixos to use ZFS properly, I import this into all my nixosConfigurations:
+You will also need to configure Nixos to use ZFS properly, I import this into all my nixosConfigurations:
 ```nix
 { config, lib, pkgs, inputs, ... }:
 {
@@ -429,9 +429,9 @@ You will also need to configure nixos to use ZFS properly, I import this into al
 
 ## Impermanence - persisting important files, burning the rest
 
-[Erase your darlings](https://grahamc.com/blog/erase-your-darlings/) has become pretty popular when talking about impermanence - where your root directory gets wiped every reboot. Having a clean system where you can have confidence that everything on your disk is what you want and *only* what you want is amazing. But in context with my goals, this practically forces you to place all of the files you care about into a single location, which makes small efficient backups a breeze, so long as you don't go crazy with what files you persist.  
+[Erase Your Darlings](https://grahamc.com/blog/erase-your-darlings/) has become pretty popular when talking about impermanence - where your root directory gets wiped every reboot. Having a clean system where you can have confidence that everything on your disk is what you want and *only* what you want is amazing. But in context with my goals, this practically forces you to place all of the files you care about into a single location, which makes small efficient backups a breeze, so long as you don't go crazy with what files you persist.  
 
-You don't need to use the [impermanence module](https://github.com/nix-community/impermanence) to create this effect, you can configure all of the symlinks yourself, such as described in Erase Your Darlings. However the Impermanence module makes this easy and convenient. So I have chosen to use it.
+You don't need to use the [impermanence module](https://github.com/nix-community/impermanence) to create this effect, you can configure all of the symlinks yourself, such as described in Erase Your Darlings. However, the Impermanence module makes this easy and convenient. So I have chosen to use it.
 
 
 
@@ -445,8 +445,8 @@ First import into the flake.nix
   ...
 }
 ```
-Then I make a module which I import into every host configuration.
-The persistent datasets were configured above in the root disko config, I use those in my impermanence config, while allowing devices to alter these directories if needed.
+Then I make a module that I import into every host configuration.
+The persistent datasets were configured above in the root Disko config, I use those in my impermanence config while allowing devices to alter these directories if needed.
 ```nix
 { config, lib, pkgs, inputs, ... }:
 {
@@ -494,10 +494,10 @@ in
 }
 ```
 By using `${backup}` or `${dontBackup}` I can store the folders in the correct dataset.
-For any program or service that I need to retain data for, I have to configure its locations in impermanence otherwise the files with be gone on reboot. While it can be a pain to configure for each location initially, by forcing the files to either be explicitly stored or else destroyed we can make sure all important to files to backup are a single dataset.  
+For any program or service that I need to retain data for, I have to configure its locations in impermanence otherwise the files with be gone on reboot. While it can be a pain to configure for each location initially, by forcing the files to either be explicitly stored or else destroyed we can make sure all important files to backup are a single dataset.  
 I have some of the basic locations typically needed for the OS configured in my primary config [linked here](#sources).
 
-Back in my disko configuration I have this additional option:
+Back in my Disko configuration, I have this additional option:
 
 ```nix
 { config, lib, pkgs, inputs, ... }:
@@ -526,9 +526,9 @@ It also provides a toggle so I can disable this behavior if I need to for troubl
 
 ## Syncoid and Sanoid - ZFS snapshot management
 
-Nixos comes with modules for [Syncoid and Sanoid](https://github.com/jimsalterjrs/sanoid) which are some tools to make managing zfs snapshots easily.
+Nixos comes with modules for [Syncoid and Sanoid](https://github.com/jimsalterjrs/sanoid) which are some tools to make managing ZFS snapshots easy.
 
-Sanoid is used to create and destroy zfs snapshots. It is pretty simple to configure. You can adjust retention durations for the snapshots easily, and pick which datasets you want to snapshot.
+Sanoid is used to create and destroy ZFS snapshots. It is pretty simple to configure. You can adjust retention durations for the snapshots easily, and pick which datasets you want to snapshot.
 ```nix
 { options, config, lib, pkgs, inputs, ... }:
 let
@@ -573,10 +573,9 @@ in
 ```
 
 Syncoid simply transfers datasets from one location to another.  
-Here I setup services for transferring the persistSave dataset created above onto the zstorage pool I create in my [primary config](#sources) on a designated backup server. Multiple hosts can be configured to be backup servers without conflict.
+Here I set up services for transferring the persistSave dataset created above onto the zstorage pool I create in my [primary config](#sources) on a designated backup server. Multiple hosts can be configured to be backup servers without conflict.
 
-I wanted to reduce the amount of manual configuration needed for these backups, so I have the module check the flake for all nixosConfigurations, and generate backup services for each host. I then allow the backup server to exclude any of the devices explicitly, as well as enter additional hostnames to run the backup service for non-nixos machines. Any non-nixos machines I want to backup I'll have to ensure the dataset, the syncoid user, and correct permissions are configured on the non-nixos host.  
-Ideally the module would reach into the nixosConfigurations and only create backup tasks for those which have `yomaq.syncoid.enable` set to true. I have done something similar with my homepage module which I plan to make a post about later. The Nixos syncoid module however appears to be setup in such a way that this will create infinite recursions, and I haven't found a way around it yet.
+I wanted to reduce the amount of manual configuration needed for these backups, so I have the module check the flake for all nixosConfigurations, and generate backup services for each host. I then allow the backup server to exclude any of the devices explicitly, as well as enter additional hostnames to run the backup service for non-Nixos machines. For any non-Nixos machines I want to back up, I'll have to ensure the dataset, the syncoid user, and correct permissions are configured on the non-Nixos host. Ideally, the module would reach into the nixosConfigurations and only create backup tasks for those which have `yomaq.syncoid.enable` set to true. I have done something similar with my homepage module which I plan to make a post about later. The Nixos syncoid module however appears to be setup in such a way that this will create infinite recursions, and I haven't found a way around it yet.
 
 ```nix
 { options, config, lib, pkgs, inputs, ... }:
@@ -688,10 +687,10 @@ With this module imported to each nixosConfiguration, set `config.yomaq.syncoid.
 
 ## Tailscale for Syncoid
 
-I use Tailscale to provide the ssh connections and authentication for the backup service.
+I use Tailscale to provide the SSH connections and authentication for the backup service.
 Just need Tailscale installed and running on all of your devices, it should be pretty basic. You can check my Tailscale module [linked here](#sources) for an example.
 
-In my Tailscale ACL I have to configure the access and SSH permissions.
+In my Tailscale ACL, I have to configure the access and SSH permissions.
 ```
 "tagOwners": {
   "tag:syncoidServer":   [],
@@ -722,9 +721,8 @@ With Tailscale SSH I don't need to have any ports exposed, and I can have both t
 
 ## Syncoid - Restoring from backups
 
-Now that I have a backup server saving datasets for our hosts lets look at restoring a dataset to a host, or moving it to a new host.
-
-First we add an other option to our disko config:
+Now that I have a backup server saving datasets for our hosts let's look at restoring a dataset to a host, or moving it to a new host.
+First, we add another option to our disko config:
 
 ```nix
 { options, config, lib, pkgs, inputs, ... }:
@@ -749,20 +747,20 @@ syncoid admin@backupserver:zstorage/backups/client admin@client:zpool/persistSav
 ```
 
 Then remove the `amReinstalling` line from the config and do a nixos-rebuild and the data restore should be complete.  
-The syncoid account on the server only has access to the datasets when the backup service is running, and on the client computers the syncoid account only gets access to send the dataset after it already exists, so you need to use an admin account to run the restore commands.
+The syncoid account on the server only has access to the datasets when the backup service is running, and on the client computers, the syncoid account only gets access to send the dataset after it already exists, so you need to use an admin account to run the restore commands.
 
-The `config.yomaq.disks.amReinstalling` option is also something I use elsewhere like for the zstorage zpool, where I specifically do NOT want disko to overwrite the storage disks when I am just trying to re-install the OS on the root OS disks. See the primary config [linked here](#sources)
+The `config.yomaq.disks.amReinstalling` option is also something I use elsewhere like for the zstorage zpool, where I specifically do NOT want Disko to overwrite the storage disks when I am just trying to re-install the OS on the root OS disks. See the primary config [linked here](#sources)
 This allows me to easily re-install Nixos if something breaks without needing to worry about losing the data in my backup disks.
 
-## Nixos-anywhere - Convenient installation for nixos
+## Nixos-anywhere - Convenient installation for Nixos
 
-Nixos-anywhere pairs right alongside with disko. It enables you to ssh into an existing linux machine or pre-install environment, and with a single command it will install your nixos host configuration onto the machine. (encryption complicates this a little)
+Nixos-anywhere pairs right alongside with Disko. It enables you to ssh into an existing Linux machine or pre-install environment, and with a single command it will install your Nixos host configuration onto the machine. (encryption complicates this a little)
 
-First boot into a nixos installer (you can make your own nixos iso that automatically connects to your Tailnet so you can access it regardless of what network you may be trying to install to. I may make a post on this later.)
+First boot into a Nixos installer (you can make your own Nixos iso that automatically connects to your Tailnet so you can access it regardless of what network you may be trying to install to. I may make a post on this later.)
 
 
 
-Ensure the  nixos host configuration includes an accurate disko config, then run a command like this to install nixos
+Ensure the  Nixos host configuration includes an accurate disko config, then run a command like this to install Nixos
 ```
 nix run github:nix-community/nixos-anywhere -- --flake <path to configuration>#<configuration name> root@<ip address>
 ```
@@ -770,11 +768,10 @@ nix run github:nix-community/nixos-anywhere -- --flake <path to configuration>#<
 
 ## Luks encryption - Initrd-ssh and Nixos-anywhere
 
-In the above disko module I made, encryption with luks is an option (required for the two disk configuration).
-To install the encrypted system I use a script to run nixos-anywhere and pass in the encryption password needed to disko from 1password.
+In the above Disko module I made, encryption with luks is an option (required for the two disk configuration).
+To install the encrypted system I use a script to run Nixos-anywhere and pass in the encryption password needed to disko from 1password.
 Out of scope, but I also deploy my [agenix](https://github.com/ryantm/agenix) keys this way. If I want to be able to connect to Tailscale on the first boot, I need to already have keys configured with agenix permissions before I install the system.
-
-Obviously don't need to use 1password, but its what I've chosen to use for now.
+Don't need to use 1Password, but it's what I've chosen to use for now.
 
 ```bash
 #! /run/current-system/sw/bin/bash
@@ -818,7 +815,7 @@ nix run github:numtide/nixos-anywhere -- --extra-files "$temp" --build-on-remote
 Initrd-ssh does complicate this install process a bit further. After the system installs you must unlock it manually first, navigate to `/etc/ssh` delete the initrd key, and regenerate it.
 From here you can restore persistSave from a backup server or just do a nixos-rebuild and you are set. Once the system rebuilds initrd-ssh will be available.
 
-I don't want to have to manually ssh into the systems and enter their encryption password every time they reboot. So I built a nix module to deploy a bash script which will dynamically update with all nixos host configurations in my flake, automatically pull the encryption password from 1password, and unlock the disks.
+I don't want to have to manually ssh into the systems and enter their encryption password every time they reboot. So I built a Nix module to deploy a bash script that will dynamically update with all Nixos host configurations in my flake, automatically pull the encryption password from 1Password, and unlock the disks.
 
 ```nix
 { pkgs, inputs, ... }:
@@ -903,18 +900,18 @@ You can then install the script on your host like so:
 }
 ```
 
-Now, so long as 1password is configured on your system you can run the script `initrd-ssh $HOSTNAME` to unlock the disks.
+Now, so long as 1Password is configured on your system you can run the script `initrd-ssh $HOSTNAME` to unlock the disks.
 
-There are options to unlock luks with the TPM for nixos, but as of now they are not officially supported in Nixos and require significant configuration and setup, all while being a bit fragile.  
-As my goal is convenience I have decided to go with initrd-ssh as it is the easiest method to configure, and with the unlock script below is actually easy to unlock devices as well.
-A future goal for this is to setup Tailscale SSH for initrd. This will allow me to close the ssh port, as well as unlock devices that are not on my current network. The only pain point with this is the Tailscale OAuth key will need to be renewed every 3 months or else I lose contact, and the key is unencrypted on the device (mostly not an issue so long as your OAuth key permissions are setup properly).
+There are options to unlock luks with the TPM for Nixos, but as of now they are not officially supported in Nixos and require significant configuration and setup, all while being a bit fragile.  
+As my goal is convenience I have decided to go with initrd-ssh as it is the easiest method to configure, and with the unlock script below is easy to unlock devices as well.
+A future goal for this is to set up Tailscale SSH for initrd. This will allow me to close the SSH port, as well as unlock devices that are not on my current network. The only pain point with this is the Tailscale OAuth key will need to be renewed every 3 months or else I lose contact, and the key is unencrypted on the device (mostly not an issue so long as your OAuth key permissions are set up properly).
 
 
 ## Initrd-ssh configuration
 
-To setup initrd-ssh itself I use the config below in my primary module.
-I use systemd boot, and enable a few settings for the initrd environment. To setup the initrd network I have to specify the ethernet driver that will be in use. I grab this information at the same time I collect the disk device names, and add it to the host configuration before installing NixOS.
-Currently I do not have a way to support initrd-ssh over wifi.
+To set up initrd-ssh itself I use the config below in my primary module.
+I use systemd boot and enable a few settings for the initrd environment. To set up the initrd network I have to specify the ethernet driver that will be in use. I grab this information at the same time I collect the disk device names, and add it to the host configuration before installing NixOS.
+Currently, I do not have a way to support initrd-ssh over wifi.
 
 ```nix
 { options, config, lib, pkgs, inputs, ... }:
@@ -956,7 +953,7 @@ in
       boot.loader.efi.canTouchEfiVariables = true;
     })
     (lib.mkIf (cfg.enable && cfg.initrd-ssh.enable) {
-      # setup initrd ssh to unlock the encripted drive
+      # setup initrd ssh to unlock the encrypted drive
       boot.initrd.network.enable = true;
       boot.initrd.availableKernelModules = cfg.initrd-ssh.ethernetDrivers;
       boot.kernelParams = [ "ip=::::${hostName}-initrd::dhcp" ];
@@ -976,7 +973,7 @@ in
 
 ```
 
-This module is then imported into the host, and the device specific config is setup like this:
+This module is then imported into the host, and the device-specific config is set like this:
 
 ```nix
 { config, lib, pkgs, inputs, modulesPath, ... }:
@@ -995,4 +992,4 @@ This module is then imported into the host, and the device specific config is se
 ## Conclusion
 
 I worked most of this out over several months in 2023 and have been using it since. Gradually I am making edits to everything and you can check for the current version on my [flake](https://github.com/yomaq/nix-config/tree/main).
-Overall I feel like I have achieved my goals. Things I am still wanting to change are like TMP unlocking for some devices, Tailscale initrd-ssh, maybe an ssh-less backup process. The install process for non-encrypted systems is about as smooth as I think it can get, but encrypted systems require a bit more manual setup than I like and I'm hoping to smooth that process out eventually.
+Overall I feel like I have achieved my goals. Things I still want to change are TMP unlocking for some devices, Tailscale initrd-ssh, and maybe an SSH-less backup process. The install process for non-encrypted systems is about as smooth as I think it can get, but encrypted systems require a bit more manual setup than I like and I'm hoping to smooth that process out eventually.
