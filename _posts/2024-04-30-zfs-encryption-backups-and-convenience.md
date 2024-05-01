@@ -44,7 +44,7 @@ Tools and services I use to get all this working:
 
 [Nixos](https://nixos.org/)  
 [Nixos Disko module](https://github.com/nix-community/disko)  
-[Nixos Anywhere - pairs with disko]()  
+[Nixos Anywhere - pairs with disko](https://github.com/nix-community/nixos-anywhere)  
 [Nixos Impermanence module](https://github.com/nix-community/impermanence)  
 
 [Tailscale](https://tailscale.com/kb/1017/install)  
