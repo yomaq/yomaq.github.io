@@ -11,6 +11,7 @@ Focusing on things like:
 * Determinate builds and systems
 * Nixos
 * Kubernetes
+* DevOps
 * AI / MLOps
 * CI / CD
 * Selfhosting / homelab
