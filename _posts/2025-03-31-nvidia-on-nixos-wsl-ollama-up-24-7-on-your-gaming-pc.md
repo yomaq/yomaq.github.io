@@ -69,7 +69,7 @@ Alternatively there are [other ways](https://wiki.nixos.org/wiki/Automatic_syste
 To get started with the installation follow the steps from the [Nixos-WSL github](https://github.com/nix-community/NixOS-WSL?tab=readme-ov-file):
 
 1. Enable WSL if you haven't done already:
-  - ```powershell
+   ```powershell
     wsl --install --no-distribution
     ```
 
@@ -78,10 +78,9 @@ To get started with the installation follow the steps from the [Nixos-WSL github
 3. Double-click the file you just downloaded (requires WSL >= 2.4.4)
 
 4. You can now run NixOS:
-
-- ```powershell
-  wsl -d NixOS
-  ```
+    ```powershell
+    wsl -d NixOS
+    ```
 
 Then set it as default
 
@@ -260,7 +259,7 @@ virtualisation.oci-containers.containers = {
 };
 ```
 
-One more `nixos-rebuild switch` and you should have your ollama container should be started.  
+One more `nixos-rebuild switch` and your ollama container should be started.  
 
 ---
 ### Networking and Testing
