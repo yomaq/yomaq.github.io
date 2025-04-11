@@ -304,7 +304,7 @@ If NOT using Tailscale:
   * Now using your Windows' LAN IP address you should be able to access ollama: `http://192.168.1.123:11434`
 * Test api using your Windows LAN IP address.
   ```
-  curl http://WINDOWS-LAN-IP:11434api/generate -d '{
+  curl http://WINDOWS-LAN-IP:11434/api/generate -d '{
     "model": "gemma3",
     "prompt": "test",
     "stream": false
