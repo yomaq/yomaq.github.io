@@ -10,23 +10,24 @@ tags:
 - tailscale
 date: 2025-03-31 23:22 -0500
 ---
-### Convenient LLMs at Home
+### Convenient AI at Home
 
-I've been wanting to experiment with LLMs in my homelab, but didn't want the overhead of a dedicated GPU machine or the slowness of CPU processing. I also wanted everything to be convenient long-term: updates needed to be automated, and if the OS dies rebuilding needed to be quick and easy, etc.
+I've been wanting to experiment with LLMs/AI in my homelab, but didn't want the overhead of a dedicated GPU machine or the slowness of CPU processing. I also wanted everything to be convenient long-term: updates needed to be automated, and if the OS dies rebuilding needed to be quick and easy, etc.
 
 Running NixOS with WSL on my gaming PC seemed like the perfect solution, but I kept running into several challenges:
 
-* Concerns of my vram getting locked to LLMs
+* Concerns of my vram getting locked to models
 * WSL would shut down automatically; Microsoft doesn't support WSL running if you aren't actively using it.
 * NixOS on WSL didn't support Nvidia out of the box.
-* I refused to manage a separate Ubuntu box that would need reconfiguring from scratch.
+* I refused to manage a separate Ubuntu box that would need reconfiguring from scratch each time I might need to set it back up.
+* Flexibility for future containerized gpu workloads. (Ollama can run on Windows, but not everything can.)
 
 After hacking away at it for a number of weeks, I've now solved the blocks:
 
 * Ollama (by default) unloads models if they haven't been used in the past 5 minutes.
 * WSL automatically starts up, and **stays** running.
 * Configured Nvidia Container Toolkit for NixOS on WSL.
-* Ollama container configured for NixOS.
+* Ollama container configured for NixOS. (Easily expandable for other containerized gpu workloads, such as TTS, etc.)
 * NixOS handles the configuration for the whole system so rebuilding from scratch is easy.
 * My NixOS flake is already configured for automatic updates that my WSL system can just inherit.
 
