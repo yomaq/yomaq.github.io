@@ -166,8 +166,9 @@ virtualisation.docker = {
 ```
 
 Do anther `nixos-rebuild switch` and restart WSL.  
-Now you should be able to run `nvidia-smi` and see your gpu.
-You'll need to run all of your docker containers with `--device=nvidia.com/gpu=all` to connect to the gpus.
+Now you should be able to run `nvidia-smi` from the root user, and see your gpu.
+You'll need to run all of your docker containers with `--device=nvidia.com/gpu=all` to connect to the gpus.  
+*The default nixos user is still defaulting to the windows provided nvidia-smi. The root user, and the user accounts in my flake listed above dont have this issue, I am actively trying to figure this out, its just a PATH issue. You can also run `/run/current-system/sw/bin/nvidia-smi` with the nixos user.*
 
 *I did not discover these fixes on my own, I pieced this information together from these two github issues*:
 * https://github.com/nix-community/NixOS-WSL/issues/454
